@@ -1,4 +1,4 @@
-# Sprint 1 — 验证 + 接入 macOS 服务
+# Sprint 1 — 验证 + 接入 macOS 右键朗读
 
 ## 1. 启动 Gateway
 
@@ -7,28 +7,29 @@ cd ~/user/kvoicewalk
 uv run python -m uvicorn utilities.server:app --host 127.0.0.1 --port 8880
 ```
 
-## 2. 创建 Automator Service
+## 2. 创建 Automator 服务
 
-1. 打开 **Automator** → 新建 → **Service**
-2. 顶栏：**Service receives selected `text` in `any application`**
-3. 左侧搜索 **Run Shell Script**，拖到右边
-4. **Pass input:** `to stdin`
-5. **Shell 内容:**
+1. 打开 **自动操作（Automator）**
+2. 新建 → **服务（Service）**
+3. 顶栏设置：**"服务收到选定的" `文本` "位于" `任何App`**
+4. 左侧资源库搜索 **"运行Shell脚本"**，拖到右边
+5. **"传递输入"** 选 **"作为 stdin"**
+6. 脚本内容写：
    ```bash
    ~/user/kvoicewalk/bin/read-civilight
    ```
-6. 保存为 **Read with Civilight**
+7. 保存为 **Read with Civilight**
 
 ## 3. 绑定快捷键
 
 **系统设置 → 键盘 → 键盘快捷键 → 服务**
-→ 找到 **Read with Civilight**
-→ 双击右侧，按下 `⌥⌘R`
+→ 在列表里找到 **"Read with Civilight"**
+→ 双击右侧空白，按住 `⌥⌘R`
 
 ## 4. 使用
 
-选中任意文字 → 按 `⌥⌘R`
+在任何App（Zotero、浏览器、编辑器等）选中一段文字 → 按 `⌥⌘R` → 自动播放合成语音。
 
-## 5. 浏览器里也能用
+## 5. 只想 Zotero 用？
 
-因为 Service 是系统级的，Safari/Chrome 里选中文字也能用同一个快捷键。如果希望只限 Zotero，在 Automator Service 顶栏的 `any application` 改成 `Zotero` 即可。
+在 Automator 顶栏把 `任何App` 改成 `Zotero` 即可。
