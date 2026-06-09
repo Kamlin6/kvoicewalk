@@ -1,2 +1,2 @@
 #!/bin/bash
-pkill -x afplay 2>/dev/null && osascript -e 'display notification "朗读已停止" with title "Read with Civilight"' || echo "没有正在播放的音频"
+pkill -x ffplay 2>/dev/null && osascript -e 'display notification "朗读已停止" with title "Read with Civilight"' || echo "没有正在播放的音频"
