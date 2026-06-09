@@ -24,6 +24,10 @@
 |----|------|--------|------|
 | ZP-01 | **Zotero 9 TTS 插件** — 对接本地 Gateway，支持自定义音色和语言路由 | P3 | 待评估 |
 
+## 踩坑记录
+
+- PDF 转文本常含 Unicode 私用区（U+E000～U+F8FF）和代理项（U+D800～U+DFFF）字符，TTS 前必须过滤。已在 preprocessor.py 中实现 `_strip_unwanted()`。
+
 ## 已完成
 
 - Sprint 1: Local TTS Gateway（4 commits, 5 ATTACK 风险修复）
