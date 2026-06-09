@@ -86,6 +86,9 @@ separated/**/*
 !voices/zm_yunxia.pt
 !voices/zm_yunyang.pt
 
+# Personal learning notes
+_to_learn/
+
 # Project meta
 BACKLOG
 PIPELINE/
