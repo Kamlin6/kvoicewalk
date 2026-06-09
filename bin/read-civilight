@@ -1,0 +1,11 @@
+#!/bin/bash
+text=$(cat)
+if [ -z "$text" ]; then exit 0; fi
+tmpfile=$(mktemp /tmp/tts_XXXXXX.wav)
+curl -s -X POST http://127.0.0.1:8880/v1/audio/speech \
+  -H "Content-Type: application/json" \
+  -d "$(python3 -c "
+import sys, json
+print(json.dumps({'model':'kokoro','input':sys.stdin.read().strip(),'voice':'civilight','response_format':'wav'}))
+")" -o "$tmpfile" && afplay "$tmpfile"
+rm -f "$tmpfile"
