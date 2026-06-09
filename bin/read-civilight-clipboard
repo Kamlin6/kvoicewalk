@@ -5,7 +5,7 @@ if [ -z "$text" ]; then
   osascript -e 'display notification "没有复制任何文字" with title "Read with Civilight"'
   exit 0
 fi
-encoded=$(python3 -c "import sys,json; print(json.dumps({'model':'kokoro','input':sys.argv[1],'voice':'civilight','response_format':'wav'}))" "$text")
+encoded=$(python3 -c "import sys,json; print(json.dumps({'model':'kokoro','input':sys.argv[1],'voice':'civilight','response_format':'opus'}))" "$text")
 curl -s -X POST http://127.0.0.1:8880/v1/audio/speech \
   -H "Content-Type: application/json" \
-  -d "$encoded" | ffplay -nodisp -autoexit -loglevel quiet -flags low_delay -
+  -d "$encoded" | ffplay -nodisp -autoexit -loglevel quiet -flags low_delay -f ogg -
