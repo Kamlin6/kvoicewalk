@@ -1,4 +1,5 @@
 #!/bin/bash
+pkill -x afplay 2>/dev/null
 text=$(pbpaste)
 if [ -z "$text" ]; then
   osascript -e 'display notification "没有复制任何文字" with title "Read with Civilight"'
