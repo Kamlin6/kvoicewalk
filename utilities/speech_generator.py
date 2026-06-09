@@ -11,7 +11,7 @@ class SpeechGenerator:
     def __init__(self, device: str = "auto"):
         surpressWarnings()
         self.device = resolve_device(device)
-        self.pipeline = KPipeline(lang_code="j", repo_id="hexgrad/Kokoro-82M", device=self.device)
+        self.pipeline = KPipeline(lang_code="a", repo_id="hexgrad/Kokoro-82M", device=self.device)
 
     def generate_audio(self, text: str, voice: torch.Tensor | str, speed: float = 1.0) -> np.typing.NDArray[np.float32]:
         voice_arg = voice

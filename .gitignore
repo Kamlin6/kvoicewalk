@@ -11,6 +11,8 @@ wheels/
 .venv
 .idea
 
+*.bak
+
 # Folders (ignore everything in these folders)
 example/*
 example/**/*
