@@ -1,0 +1,80 @@
+ERROR:    Exception in ASGI application
+Traceback (most recent call last):
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/uvicorn/protocols/http/h11_impl.py", line 415, in run_asgi
+    result = await app(  # type: ignore[func-returns-value]
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/uvicorn/middleware/proxy_headers.py", line 62, in __call__
+    return await self.app(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/fastapi/applications.py", line 1159, in __call__
+    await super().__call__(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/applications.py", line 90, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 186, in __call__
+    raise exc
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/middleware/errors.py", line 164, in __call__
+    await self.app(scope, receive, _send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/middleware/base.py", line 191, in __call__
+    with recv_stream, send_stream, collapse_excgroups():
+  File "/Users/zhuanzmima0000/.local/share/uv/python/cpython-3.10-macos-aarch64-none/lib/python3.10/contextlib.py", line 153, in __exit__
+    self.gen.throw(typ, value, traceback)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/_utils.py", line 87, in collapse_excgroups
+    raise exc
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/middleware/base.py", line 193, in __call__
+    response = await self.dispatch_func(request, call_next)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/utilities/server.py", line 74, in limit_body_size
+    return await call_next(request)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/middleware/base.py", line 168, in call_next
+    raise app_exc from app_exc.__cause__ or app_exc.__context__
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/middleware/base.py", line 144, in coro
+    await self.app(scope, receive_or_disconnect, send_no_error)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/middleware/cors.py", line 88, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/middleware/exceptions.py", line 63, in __call__
+    await wrap_app_handling_exceptions(self.app, conn)(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/fastapi/middleware/asyncexitstack.py", line 18, in __call__
+    await self.app(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/routing.py", line 660, in __call__
+    await self.middleware_stack(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/routing.py", line 680, in app
+    await route.handle(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/routing.py", line 276, in handle
+    await self.app(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 134, in app
+    await wrap_app_handling_exceptions(app, request)(scope, receive, send)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 53, in wrapped_app
+    raise exc
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/starlette/_exception_handler.py", line 42, in wrapped_app
+    await app(scope, receive, sender)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 120, in app
+    response = await f(request)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 674, in app
+    raw_response = await run_endpoint_function(
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/fastapi/routing.py", line 328, in run_endpoint_function
+    return await dependant.call(**values)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/utilities/server.py", line 123, in create_speech
+    sr, audio = adapter.generate(cleaned, str(pt_path), speed=req.speed)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/utilities/tts_engine.py", line 22, in generate
+    audio = self.sg.generate_audio(text, voice, speed)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/utilities/speech_generator.py", line 24, in generate_audio
+    audio = [chunk for _, _, chunk in generator]
+  File "/Users/zhuanzmima0000/user/kvoicewalk/utilities/speech_generator.py", line 24, in <listcomp>
+    audio = [chunk for _, _, chunk in generator]
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/kokoro/pipeline.py", line 376, in __call__
+    _, tokens = self.g2p(graphemes)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/misaki/en.py", line 656, in __call__
+    tokens = self.tokenize(text, tokens, features)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/misaki/en.py", line 542, in tokenize
+    doc = self.nlp(text)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/spacy/language.py", line 1040, in __call__
+    doc = self._ensure_doc(text)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/spacy/language.py", line 1131, in _ensure_doc
+    return self.make_doc(doc_like)
+  File "/Users/zhuanzmima0000/user/kvoicewalk/.venv/lib/python3.10/site-packages/spacy/language.py", line 1123, in make_doc
+    return self.tokenizer(text)
+  File "spacy/tokenizer.pyx", line 160, in spacy.tokenizer.Tokenizer.__call__
+  File "spacy/tokenizer.pyx", line 194, in spacy.tokenizer.Tokenizer._tokenize_affixes
+  File "spacy/strings.pyx", line 63, in spacy.strings.hash_string
+UnicodeEncodeError: 'utf-8' codec can't encode characters in position 5-6: surrogates not allowed
