@@ -24,13 +24,8 @@ texts/*
 texts/**/*
 voices/*
 voices/**/*
-# Include folders even if empty
-!example/**/.gitkeep
-!out/**/.gitkeep
-!in/**/.gitkeep
-!interpolated/**/.gitkeep
-!texts/**/.gitkeep
-!voices/**/.gitkeep
+separated/*
+separated/**/*
 #...except official Kokoro voice models
 # Upload original voices only
 !example/target.wav
@@ -88,3 +83,7 @@ voices/**/*
 !voices/zm_yunxi.pt
 !voices/zm_yunxia.pt
 !voices/zm_yunyang.pt
+
+# Project meta
+BACKLOG
+PIPELINE/

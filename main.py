@@ -22,6 +22,13 @@ def main():
     )
 
     # Optional arguments
+    #<yuri>
+    """
+    这里和target_text不一样，是用来给kvoicewalk进行自身相似度
+    用的，最好同你自己想要克隆的语言一致
+    但是为了不要直接修改源码逻辑，我们自行传递一句话就可以了。
+    """
+    #</yuri>
     parser.add_argument(
         "--other_text",
         type=str,
