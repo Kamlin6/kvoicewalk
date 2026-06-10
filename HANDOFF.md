@@ -43,3 +43,28 @@ Sprint 2 全部完成。Gateway + GPT-SoVITS API 双服务均 launchd 管理。B
 
 ## 下一步建议
 参考 `note_obsidian/HANDOFF.md` 了解 Blog/Writing 草稿的完整上下文。先和用户确认 Blog 面向谁、目的是什么，再推草稿。
+
+---
+
+# Session — 2026-06-10
+
+## 会话总结
+Sprint 2 代码归档 + 全局话题关闭。
+
+### 交付
+- Sprint 2 全部变更 commit + push：`9bfdb16` → origin/main
+- 未提交的 Sprint 2 代码（`gptsovits_adapter.py`, `server.py`, `voice_map.json` 等 6 文件）全部入库
+
+### 验证
+- `git status`: 工作区干净
+- `git log`: `9bfdb16 [macOS][feat][All]: add multi-language TTS routing with GPT-SoVITS adapter`
+
+## 进度状态
+- Sprin1 1/1b/2: 全部 ✅ committed + pushed
+- BACKLOG: FT（暑期微调）和 ZP-01（Zotero）保留未动
+
+## 上下文快照
+- 分支: `main`（up-to-date with origin/main）
+- 工作区: clean
+- Gateway: 127.0.0.1:8880, launchd 管理
+- GPT-SoVITS API: 127.0.0.1:9880, launchd 管理
