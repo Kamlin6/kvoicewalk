@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import subprocess
 import time
@@ -12,14 +13,45 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel, Field
 
+from utilities.gptsovits_adapter import (
+    GPTSoVITSAdapter,
+    GPTSoVITSAPIError,
+    GPTSoVITSNotFound,
+    GPTSoVITSUnavailable,
+)
 from utilities.preprocessor import clean_text
 from utilities.tts_engine import KokoroAdapter
 
+logger = logging.getLogger(__name__)
+
 _here = Path(__file__).resolve().parent
-voice_map = json.loads((_here / "voice_map.json").read_text())
+voice_map_raw = json.loads((_here / "voice_map.json").read_text())
 voices_dir = _here.parent / "voices"
 
-adapter = KokoroAdapter(lang_code="a", device="auto")
+# M-03: 校验 voice_map 新结构
+kokoro_map = voice_map_raw.get("kokoro")
+gptsovits_map = voice_map_raw.get("gpt-sovits")
+if not isinstance(kokoro_map, dict) or not isinstance(gptsovits_map, dict):
+    raise RuntimeError(
+        "voice_map.json must have 'kokoro' and 'gpt-sovits' sections. "
+        "Update to Sprint 2 format: {kokoro: {...}, gpt-sovits: {...}}"
+    )
+
+adapter_kokoro = KokoroAdapter(lang_code="a", device="auto")
+adapter_gptsovits = GPTSoVITSAdapter(voice_map=gptsovits_map)
+
+# M-08: 启动时记录 GPT-SoVITS 不可用警告
+try:
+    import httpx
+    with httpx.Client(base_url=adapter_gptsovits.base_url, timeout=5) as _probe:
+        _probe.get("/")
+    logger.info("GPT-SoVITS server is reachable at %s", adapter_gptsovits.base_url)
+except Exception:
+    logger.warning(
+        "GPT-SoVITS server at %s is not reachable on startup. "
+        "Requests will fail with 503 until the server becomes available.",
+        adapter_gptsovits.base_url,
+    )
 
 app = FastAPI(title="kvoicewalk TTS Gateway")
 
@@ -80,14 +112,18 @@ async def list_models():
         "object": "list",
         "data": [
             {"id": "kokoro", "object": "model", "created": int(time.time()), "owned_by": "kvoicewalk"},
+            {"id": "gpt-sovits", "object": "model", "created": int(time.time()), "owned_by": "kvoicewalk"},
         ],
     }
 
 
 @app.post("/v1/audio/speech")
 async def create_speech(req: TTSRequest):
-    if req.model != "kokoro":
-        return error_response(f"Unsupported model: {req.model}", 400)
+    # --- 校验 model ---
+    if req.model not in ("kokoro", "gpt-sovits"):
+        return error_response(
+            f"Unsupported model: {req.model}. Supported: kokoro, gpt-sovits", 400
+        )
 
     input_text = req.input.strip()
     if not input_text:
@@ -111,24 +147,42 @@ async def create_speech(req: TTSRequest):
     except ValueError as e:
         return error_response(str(e), 400)
 
-    pt_file = voice_map.get(voice_name, voice_name)
-    pt_path = voices_dir / f"{pt_file}.pt"
-    if not pt_path.exists():
-        return error_response(f"Voice '{req.voice}' not found", 400)
-
     if len(input_text) > MAX_INPUT_CHARS:
         input_text = input_text[:MAX_INPUT_CHARS]
 
     cleaned = clean_text(input_text)
-    sr, audio = adapter.generate(cleaned, str(pt_path), speed=req.speed)
+
+    # --- 路由 ---
+    try:
+        if req.model == "kokoro":
+            pt_file = kokoro_map.get(voice_name, voice_name)
+            pt_path = voices_dir / f"{pt_file}.pt"
+            if not pt_path.exists():
+                return error_response(f"Voice '{req.voice}' not found", 400)
+            sr, audio = adapter_kokoro.generate(cleaned, str(pt_path), speed=req.speed)
+        else:  # gpt-sovits
+            sr, audio = adapter_gptsovits.generate(cleaned, voice_name, speed=req.speed)
+    except GPTSoVITSUnavailable as e:
+        logger.warning("GPT-SoVITS unavailable: %s", e)
+        return error_response(str(e), 503)
+    except GPTSoVITSNotFound as e:
+        return error_response(str(e), 404)
+    except GPTSoVITSAPIError as e:
+        logger.error("GPT-SoVITS error: %s", e)
+        return error_response(str(e), 502)
+
+    # H-04: 空音频防护 — 在格式转换前检查
+    if len(audio) == 0:
+        return error_response("Generated audio is empty", 500)
 
     fmt = req.response_format
     content_type = FORMAT_MIME[fmt]
 
+    # H-02: AAC 转换使用动态 sr 替代硬编码 24000
     if fmt == "aac":
         raw = (audio * 32767).astype(np.int16).tobytes()
         proc = subprocess.run(
-            ["ffmpeg", "-f", "s16le", "-ar", "24000", "-ac", "1", "-i", "pipe:0",
+            ["ffmpeg", "-f", "s16le", "-ar", str(sr), "-ac", "1", "-i", "pipe:0",
              "-c:a", "aac", "-b:a", "192k", "-f", "adts", "pipe:1"],
             input=raw,
             capture_output=True,

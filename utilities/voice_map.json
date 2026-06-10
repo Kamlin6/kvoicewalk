@@ -1,3 +1,19 @@
 {
-  "civilight": "af_civilight"
+  "kokoro": {
+    "civilight": "af_civilight"
+  },
+  "gpt-sovits": {
+    "civilight-ja": {
+      "ref_audio": "/Users/zhuanzmima0000/user/GPT-SoVITS/ref/Civilight/audio/reference.wav",
+      "prompt_text": "テレジアはもう戻らぬ旅路に着いたわ。残された私は、文明の存続の",
+      "prompt_lang": "ja",
+      "text_lang": "ja"
+    },
+    "civilight-zh": {
+      "ref_audio": "/Users/zhuanzmima0000/user/GPT-SoVITS/ref/Civilight/audio/reference_zh.wav",
+      "prompt_text": "不 我并不需要，特蕾西娅已经永远离开了。",
+      "prompt_lang": "zh",
+      "text_lang": "zh"
+    }
+  }
 }
